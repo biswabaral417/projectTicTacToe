@@ -3,7 +3,7 @@
 let isUsersTurn = true;
 const boardUI = document.querySelector(".board")
 
-const board = [
+let board = [
     [{ pos: "0-0", selectedby: "" }, { pos: "0-1", selectedby: "" }, { pos: "0-2", selectedby: "" }],
     [{ pos: "1-0", selectedby: "" }, { pos: "1-1", selectedby: "" }, { pos: "1-2", selectedby: "" }],
     [{ pos: "2-0", selectedby: "" }, { pos: "2-1", selectedby: "" }, { pos: "2-2", selectedby: "" }]
@@ -42,10 +42,14 @@ const setSelection = (e) => {
         el.selectedby = "user"
         isUsersTurn = false
         if (CheckWinner("user") === 1) {
+            document.getElementById("result").textContent = "you won"
+            document.getElementById("playagain").style.display = "block"
             return
         }
+        if(isBoardFull()){
+            resetBoard()
+        }
         compMove()
-        isUsersTurn = true
     } else {
         console.log(`alreadySelected ${box.getAttribute("selectedby")}`)
     }
@@ -152,6 +156,16 @@ const compMove = () => {
         const box = document.getElementById(`box${board[i][j].pos}`);
         box.setAttribute("selectedby", "comp");
         box.textContent = "0";
+
+        if (CheckWinner("comp") == 1) {
+            document.getElementById("result").textContent = "you lost"
+            document.getElementById("playagain").style.display = "block"
+            return
+        }
+        if(isBoardFull())(
+            resetBoard
+        )
+        isUsersTurn = true
     }
 };
 const isBoardFull = () => {
@@ -164,3 +178,23 @@ const isBoardFull = () => {
 };
 
 
+document.getElementById("playagain").addEventListener("click", () => {
+   resetBoard()
+    
+})
+const resetBoard=()=>{
+    board = [
+        [{ pos: "0-0", selectedby: "" }, { pos: "0-1", selectedby: "" }, { pos: "0-2", selectedby: "" }],
+        [{ pos: "1-0", selectedby: "" }, { pos: "1-1", selectedby: "" }, { pos: "1-2", selectedby: "" }],
+        [{ pos: "2-0", selectedby: "" }, { pos: "2-1", selectedby: "" }, { pos: "2-2", selectedby: "" }]
+    ]
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            document.getElementById(`box${i}-${j}`).textContent = ""
+        }
+    }
+    isUsersTurn = true
+    document.getElementById("result").textContent = ""
+            document.getElementById("playagain").style.display = "none"
+    
+}
